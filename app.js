@@ -1,9 +1,19 @@
 const express = require("express");
 const app = express();
-const authroutes = require("./routes/auth-routes");
+const mongoose = require('mongoose');
+const { authroutes } = require("./routes/auth-routes");
 const authMiddleware = require("./middleware/Auth-Middleware");
 const { todoroutes } = require("./routes/todo-routes");
-const PORT = 5000;
+const PORT = process.env.PORT;
+const MONGOURL = process.env.MONGO_URL
+
+mongoose.connect(MONGOURL).then(() => {
+  console.log("MONGO_DB Connected");
+}).catch((e) => {
+  console.log(e).message;
+})
+
+
 app.use(express.json());
 
 app.use('/auth', authroutes)
