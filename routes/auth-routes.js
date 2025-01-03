@@ -14,10 +14,12 @@ const userSchema = new mongoose.Schema({
 })
 
 const UserModel = mongoose.model("users", userSchema)
-
+11
 router.post("/login", async (req, res) => {
     const loginData = req.body
-
+    console.log("login trigger");
+    console.log(loginData);
+    
     const Schema = Joi.object({
         email: Joi.string().email().required(),
         password: Joi.string().min(4).required(),
@@ -25,6 +27,8 @@ router.post("/login", async (req, res) => {
 
     const validate = Schema.validate(loginData)
     if (validate.error) {
+        console.log(validate.error);
+        
         return res.status(400).json({ message: validate.error.message })
     }
     const FileData = await UserModel.find();
@@ -32,15 +36,17 @@ router.post("/login", async (req, res) => {
 
     const chkUser = oldData.find((d) => d.email == validate.value.email && d.password == validate.value.password)
     if (!chkUser) {
+        console.log("User Not Found");
         return res.status(400).json({ message: "User Not Found" })
     }
 
     console.log("{ message: 'User Found' }");
     try {
-
         const token = generateAccessToken(chkUser.id, process.env.JWT_SECRET);
+        console.log(token);
+        
         delete chkUser.password;
-        res.json({
+        return res.status(200).json({
             message: "Logged in success",
             data: {
                 token,
@@ -49,6 +55,7 @@ router.post("/login", async (req, res) => {
         });
     } catch (error) {
         console.log(error.message);
+        return res.json({message:"Internal Sever error"})
 
     }
 })
