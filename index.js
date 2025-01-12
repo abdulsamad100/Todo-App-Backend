@@ -22,14 +22,14 @@ mongoose.connect(MONGOURL).then(() => {
 })
 
 
+app.use('/auth', authroutes)
+
+app.use('/api', todoroutes)
 
 app.get('/',(req,res)=>{
     console.log("Server Running>>>>>>>>>");
     res.send("Express on Vercel")
 })
-app.use('/auth', authroutes)
-
-app.use('/api', todoroutes)
 
 
 
