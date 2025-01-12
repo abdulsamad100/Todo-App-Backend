@@ -1,40 +1,30 @@
 const express = require("express");
-const dotenv = require("dotenv")
+const dotenv = require("dotenv");
 const app = express();
-const cors = require('cors')
-const mongoose = require('mongoose');
+const cors = require("cors");
+const mongoose = require("mongoose");
 const { authroutes } = require("./routes/auth-routes");
-const authMiddleware = require("./middleware/Auth-Middleware");
 const { todoroutes } = require("./routes/todo-routes");
-const PORT = process.env.PORT;
-const MONGOURL = process.env.MONGO_URL
+
+dotenv.config();  // Ensure environment variables are loaded
+
+const MONGOURL = process.env.MONGO_URL;
 
 app.use(express.json());
-
-dotenv.config()
-app.use(express.json());
-app.use(cors())
+app.use(cors());
 
 mongoose.connect(MONGOURL).then(() => {
-    console.log("MONGO_DB Connected");
+  console.log("MONGO_DB Connected");
 }).catch((e) => {
-    console.log(e).message;
-})
+  console.log(e.message);  // Fix error logging here
+});
 
+app.use("/auth", authroutes);
+app.use("/api", todoroutes);
 
-app.use('/auth', authroutes)
-
-app.use('/api', todoroutes)
-
-app.get('/',(req,res)=>{
-    console.log("Server Running>>>>>>>>>");
-    res.send("Express on Vercel")
-})
-
-
-
-if(process.env.NODE_ENV!=="production"){
-    app.listen(3000, () => console.log("Server ready on port 3000."));
-}
+app.get("/", (req, res) => {
+  console.log("Server Running>>>>>>>>>");
+  res.send("Express on Vercel");
+});
 
 module.exports = app;
