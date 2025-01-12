@@ -20,6 +20,10 @@ mongoose.connect(MONGOURL).then(() => {
 
 app.use(express.json());
 
+app.get('/',(req,res)=>{
+  console.log("Server Running>>>>>>>>>");
+  
+})
 app.use('/auth', authroutes)
 
 app.use('/api', authMiddleware, todoroutes)
